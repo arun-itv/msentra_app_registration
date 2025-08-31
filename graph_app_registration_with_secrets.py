@@ -351,5 +351,5 @@ for user_email in USERS_TO_ASSIGN:
         print(f"Assigned Admin role to {user_email}")
 
 # Call at the end
-time.sleep(20)
-cleanup_backend_and_spa()
+# time.sleep(20)
+# cleanup_backend_and_spa()
