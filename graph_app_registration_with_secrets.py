@@ -4,7 +4,10 @@ import json
 from datetime import datetime, timedelta
 import traceback
 import sys
+import urllib3
+import time
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # -----------------------------
 # CONFIGURATION
 # -----------------------------
@@ -137,35 +140,76 @@ def create_client_secret(app_id, display_name="auto-generated"):
         print(f"Error while creating Client Secret", e)
 
 
+def delete_app(app_id):
+    try:
+        response = requests.delete(
+            f"{GRAPH_URL}/applications/{app_id}", headers=HEADERS, verify=False)
+        if response.status_code in [204, 200]:
+            print(f"Deleted application {app_id}")
+        else:
+            print(f"Failed to delete application {app_id}: {response.text}")
+    except Exception as e:
+        print(f"Error deleting application {app_id}: {e}")
+
+
+def delete_service_principal(sp_id):
+    try:
+        response = requests.delete(
+            f"{GRAPH_URL}/servicePrincipals/{sp_id}", headers=HEADERS, verify=False)
+        if response.status_code in [204, 200]:
+            print(f"Deleted service principal {sp_id}")
+        else:
+            print(
+                f"Failed to delete service principal {sp_id}: {response.text}")
+    except Exception as e:
+        print(f"Error deleting service principal {sp_id}: {e}")
+
+
+def remove_app_role_assignments(sp_id):
+    try:
+        # Get all app role assignments for the SP
+        response = requests.get(
+            f"{GRAPH_URL}/servicePrincipals/{sp_id}/appRoleAssignments", headers=HEADERS, verify=False)
+        response.raise_for_status()
+        assignments = response.json().get("value", [])
+        for assign in assignments:
+            assign_id = assign["id"]
+            resp = requests.delete(
+                f"{GRAPH_URL}/servicePrincipals/{sp_id}/appRoleAssignments/{assign_id}", headers=HEADERS, verify=False)
+            if resp.status_code in [204, 200]:
+                print(f"Removed app role assignment {assign_id} from {sp_id}")
+    except Exception as e:
+        print(f"Error removing app role assignments from {sp_id}: {e}")
+
+
 # -----------------------------
-# MAIN CODE
+# MAIN EXECUTION
+# -----------------------------
+# Step 0: Generate access token
 ACCESS_TOKEN = generate_access_token_for_app_registration_automation(
     MSENTRA_DEFAULT_TENANT_ID,
     APP_REGISTRATION_AUTOMATION_CLIENT_ID,
-    APP_REGISTRATION_AUTOMATION_CLIENT_SECRET)
-print("ACCESS_TOKEN", ACCESS_TOKEN)
+    APP_REGISTRATION_AUTOMATION_CLIENT_SECRET
+)
 
-sys.exit(0)  # Added for just validating access token generation
+if not ACCESS_TOKEN:
+    print("Failed to generate access token. Exiting.")
+    sys.exit(1)
 
+print("ACCESS_TOKEN generated successfully")
+
+# Initialize headers and Graph URL
 HEADERS = {
     "Authorization": f"Bearer {ACCESS_TOKEN}",
     "Content-Type": "application/json"
 }
 GRAPH_URL = "https://graph.microsoft.com/v1.0"
-# -----------------------------
 
-# -----------------------------
-# 1. CREATE BACKEND API APP
-# -----------------------------
+# Step 1: Create Backend API App
 api_read_id = str(uuid.uuid4())
 api_write_id = str(uuid.uuid4())
 admin_role_id = str(uuid.uuid4())
 user_role_id = str(uuid.uuid4())
-
-print("api_read_id", api_read_id)
-print("api_write_id", api_write_id)
-print("admin_role_id", admin_role_id)
-print("user_role_id", user_role_id)
 
 backend_payload = {
     "displayName": BACKEND_API_NAME,
@@ -215,54 +259,91 @@ backend_payload = {
     ]
 }
 
-try:
-    print(f"Backend Payload: {backend_payload}")
-    backend_app = create_application(backend_payload)
-    backend_sp = create_service_principal(backend_app["appId"])
-    print(f"Backend API created: {BACKEND_API_NAME}")
+backend_app = create_application(backend_payload)
+print("backend_app--->", backend_app)
+if not backend_app:
+    print("Failed to create backend application. Exiting.")
+    sys.exit(1)
+BACKEND_APP_ID = backend_app.get("appId")
+BACKEND_ID = backend_app.get("id")
 
-    backend_secret = create_client_secret(
-        backend_app["id"], "BackendAPISecret")
-    print("Backend client secret created. Value:",
-          backend_secret["secretText"])
+print("BACKEND_APP_ID--->", BACKEND_APP_ID)
+backend_sp = create_service_principal(BACKEND_APP_ID)
+print("backend_sp--->", backend_sp)
+if not backend_sp:
+    print("Failed to create backend service principal. Exiting.")
+    sys.exit(1)
+print("backend_sp", backend_sp)
+BACKEND_SP_ID = backend_sp.get("id")
+print("BACKEND_SP_ID--->", BACKEND_SP_ID)
 
-    # -----------------------------
-    # 2. CREATE REACT SPA APP
-    # -----------------------------
-    spa_payload = {
-        "displayName": SPA_APP_NAME,
-        "signInAudience": "AzureADMyOrg",
-        "web": {
-            "redirectUris": SPA_REDIRECT_URIS
-        },
-        "requiredResourceAccess": [
-            {
-                "resourceAppId": backend_app["appId"],
-                "resourceAccess": [
-                    {"id": api_read_id, "type": "Scope"},
-                    {"id": api_write_id, "type": "Scope"}
-                ]
-            }
-        ]
-    }
+backend_secret = create_client_secret(
+    backend_app.get("id"), "BackendAPISecret")
+if not backend_secret:
+    print("Failed to create backend client secret. Exiting.")
+    sys.exit(1)
 
-    print(f"SPA Payload: {spa_payload}")
-    spa_app = create_application(spa_payload)
-    spa_sp = create_service_principal(spa_app["appId"])
-    print(f"SPA App created: {SPA_APP_NAME}")
+print(f"Backend API '{BACKEND_API_NAME}' created successfully")
+print("Backend client secret:", backend_secret.get("secretText"))
 
-    spa_secret = create_client_secret(spa_app["id"], "SPASecret")
-    print("SPA client secret created. Value:", spa_secret["secretText"])
+# Step 2: Create SPA App
+spa_payload = {
+    "displayName": SPA_APP_NAME,
+    "signInAudience": "AzureADMyOrg",
+    "web": {
+        "redirectUris": SPA_REDIRECT_URIS
+    },
+    "requiredResourceAccess": [
+        {
+            "resourceAppId": BACKEND_APP_ID,
+            "resourceAccess": [
+                {"id": api_read_id, "type": "Scope"},
+                {"id": api_write_id, "type": "Scope"}
+            ]
+        }
+    ]
+}
 
-    # -----------------------------
-    # 3. ASSIGN ADMIN ROLE TO MULTIPLE USERS
-    # -----------------------------
-    for user_email in USERS_TO_ASSIGN:
-        try:
-            user_id = get_user_object_id(user_email)
-            assign_app_role(backend_sp["id"], user_id, admin_role_id)
-            print(f"Assigned Admin role to {user_email}")
-        except Exception as e:
-            print(f"Error assigning role to {user_email}: {e}")
-except Exception as e:
-    print(f"Error executing main code", e)
+spa_app = create_application(spa_payload)
+if not spa_app:
+    print("Failed to create SPA application. Exiting.")
+    sys.exit(1)
+SPA_APP_ID = spa_app.get("appId")
+SPA_ID = spa_app.get("id")
+
+spa_sp = create_service_principal(SPA_APP_ID)
+if not spa_sp:
+    print("Failed to create SPA service principal. Exiting.")
+    sys.exit(1)
+SPA_SP_ID = spa_sp.get("id")
+
+spa_secret = create_client_secret(spa_app.get("id"), "SPASecret")
+if not spa_secret:
+    print("Failed to create SPA client secret. Exiting.")
+    sys.exit(1)
+
+print(f"SPA App '{SPA_APP_NAME}' created successfully")
+print("SPA client secret:", spa_secret.get("secretText"))
+
+# Step 3: Assign Admin Role to Users
+for user_email in USERS_TO_ASSIGN:
+    user_id = get_user_object_id(user_email)
+    if not user_id:
+        print(f"Failed to get object ID for user {user_email}. Skipping.")
+        continue
+
+    result = assign_app_role(backend_sp.get("id"), user_id, admin_role_id)
+    if not result:
+        print(f"Failed to assign admin role to {user_email}.")
+    else:
+        print(f"Assigned Admin role to {user_email}")
+
+time.sleep(20)
+# Step 4: Remove all app role assignments
+remove_app_role_assignments(BACKEND_SP_ID)
+# Step 5: Delete service principals
+delete_service_principal(BACKEND_SP_ID)
+delete_service_principal(SPA_SP_ID)
+# Step 6: Delete applications
+delete_app(BACKEND_ID)
+delete_app(SPA_ID)
