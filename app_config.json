@@ -1,0 +1,42 @@
+{
+  "ACCESS_TOKEN": "eyJ0eXAiOiJKV1QiLCJub25jZSI6IjRqbll5dndfQ1lCQ2VtOTN5a2I0LTlMT0xXbm16aktwVkhZNnZwY2MySUUiLCJhbGciOiJSUzI1NiIsIng1dCI6IkpZaEFjVFBNWl9MWDZEQmxPV1E3SG4wTmVYRSIsImtpZCI6IkpZaEFjVFBNWl9MWDZEQmxPV1E3SG4wTmVYRSJ9.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20vIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvMjA1YWVlMTItMTA1OS00NjI4LTkwYjgtODZhM2JjZTM3M2M1LyIsImlhdCI6MTc1NjYxMjk4OSwibmJmIjoxNzU2NjEyOTg5LCJleHAiOjE3NTY2MTgzMTYsImFjY3QiOjAsImFjciI6IjEiLCJhY3JzIjpbInAxIl0sImFpbyI6IkFaUUFhLzhaQUFBQTBtS21hK3lLaGl4eE1JWXhCbjZJZUdjODI0Ri9mLzduMjdhVDg1aGJ6SEJ5Q3hYWFBGM3BtVWtaME9manorMm5XTk9XSVRJN3pJS3F1Nmt3L1lZYm9kdDlIRnNXKzh6djdKTzJmRG55UDN0RWdpbm9ZRFcxQk9hOWxULzlmcmNJQThCU2xHL3c5TXliZ3Ryb3JyaDJSajE0RHo2S1lFMTFwNG4vQmFNTHJsL0ZCVVRYbThyMXZ6d0VrQ24wbGdFLyIsImFsdHNlY2lkIjoiMTpsaXZlLmNvbTowMDAzNDAwMUQ3RjMwMEQ2IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBfZGlzcGxheW5hbWUiOiJBenVyZVBvcnRhbCBDb25zb2xlIEFwcCIsImFwcGlkIjoiYjY3N2MyOTAtY2Y0Yi00YThlLWE2MGUtOTFiYTY1MGE0YWJlIiwiYXBwaWRhY3IiOiIwIiwiZW1haWwiOiJyZWFjaGFydW5pbnN0YW50QGdtYWlsLmNvbSIsImZhbWlseV9uYW1lIjoiVmVudWdvcGFsIiwiZ2l2ZW5fbmFtZSI6IkFydW4iLCJpZHAiOiJsaXZlLmNvbSIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjEyNC4xNTMuMTIyLjIzIiwibmFtZSI6IkFydW4gVmVudWdvcGFsIiwib2lkIjoiZjE2NGRkYzktYzZlOC00MWI1LWE2MDktNTM1YjNhODliODhjIiwicGxhdGYiOiIzIiwicHVpZCI6IjEwMDMyMDA0ODQ1OEE4QUYiLCJyaCI6IjEuQWNZQUV1NWFJRmtRS0VhUXVJYWp2T056eFFNQUFBQUFBQUFBd0FBQUFBQUFBQURwQUQ3R0FBLiIsInNjcCI6IkF1ZGl0TG9nLlJlYWQuQWxsIERpcmVjdG9yeS5SZWFkV3JpdGUuQWxsIGVtYWlsIEdyb3VwLlJlYWRXcml0ZS5BbGwgSWRlbnRpdHlQcm92aWRlci5SZWFkV3JpdGUuQWxsIG9wZW5pZCBwcm9maWxlIFVzZXIuSW52aXRlLkFsbCIsInNpZCI6IjAwN2VhZGM5LWRlOTktOWEyNy0zYzI2LTQzY2NkNjJiYTNlZSIsInNpZ25pbl9zdGF0ZSI6WyJrbXNpIl0sInN1YiI6IlpNd1JZdUVZM2VBOHN5d1lpVkNwNGFZMTFjM0k0ZGh0WkNVbF8wWDdXUm8iLCJ0ZW5hbnRfcmVnaW9uX3Njb3BlIjoiQVMiLCJ0aWQiOiIyMDVhZWUxMi0xMDU5LTQ2MjgtOTBiOC04NmEzYmNlMzczYzUiLCJ1bmlxdWVfbmFtZSI6ImxpdmUuY29tI3JlYWNoYXJ1bmluc3RhbnRAZ21haWwuY29tIiwidXRpIjoicU9mVS0xdzNxMEdEZlVXNjZYWExBQSIsInZlciI6IjEuMCIsIndpZHMiOlsiNjJlOTAzOTQtNjlmNS00MjM3LTkxOTAtMDEyMTc3MTQ1ZTEwIiwiYjc5ZmJmNGQtM2VmOS00Njg5LTgxNDMtNzZiMTk0ZTg1NTA5Il0sInhtc19mdGQiOiIwVjFXeU9yMU5pTjFid2NRMkVJckJPM1Zld01qc2w4Nkd6RmxEdFJMOEFFQmFtRndZVzVsWVhOMExXUnpiWE0iLCJ4bXNfaWRyZWwiOiIxIDE0IiwieG1zX3N0Ijp7InN1YiI6Ilk4dVBVZm9zejdEMEc1XzZaNGxkUGIzUmV6ZFViY3haSmhDaFpyYkEtMVEifSwieG1zX3RjZHQiOjE3NDQ3NzY0ODh9.RXqVtkcESyB0TZnz-dNSVvqWQqyhzwURVzT5MfsWOavAGVGzx2SNk2N6wjLDRg4LzOFSdmWNid9My24k66BM9XBHsCY7Dq30c1lDZeon9Mg9U4dKnSy83UsMBvbovY_vAI6xMVzm6WFI76SYoWX-Luhqx-9Iw_wNUffmX7r1_-UZ-c6o4QFSOQ2RaVupfpQg_VzH8VPom9kx8wLboSa7Qn5TvtQShCm9k4vQcTI6G_pX1DeY6HatCXlmoNH0TCyAXzZeE0j_kNtgj9OfZrQXSkPM_5D2zU5_pdWY38RenZWSOBTVsm9y-IIU0nSr1DdahzjcfzGvpI4YBwdkp7gwtA",
+  "backend_api_name": "MySpringBootAPI",
+  "spa_app_name": "MyReactSPA",
+  "secret_expiry_days": 365,
+  "environments": {
+    "local": {
+      "spa_redirect_uris": [
+        "http://localhost:5173"
+      ],
+      "users_to_assign": [
+        "reacharunpcf@gmail.com",
+        "arun_itv@rediffmail.com"
+      ]
+    },
+    "dev": {
+      "spa_redirect_uris": [
+        "https://dev.example.com/auth/callback"
+      ],
+      "users_to_assign": [
+        "alice@domain.com",
+        "bob@domain.com"
+      ]
+    },
+    "test": {
+      "spa_redirect_uris": [
+        "https://test.example.com/auth/callback"
+      ],
+      "users_to_assign": [
+        "charlie@domain.com"
+      ]
+    },
+    "prod": {
+      "spa_redirect_uris": [
+        "https://prod.example.com/auth/callback"
+      ],
+      "users_to_assign": [
+        "admin@domain.com"
+      ]
+    }
+  }
+}
