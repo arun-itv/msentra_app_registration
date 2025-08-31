@@ -10,7 +10,7 @@ token_url = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
 data = {
     "client_id": CLIENT_ID,
     "scope": "https://graph.microsoft.com/.default",
-    "client_secret": CLIENT_SECRET,
+    "client_secret": CLIENT_SEC,
     "grant_type": "client_credentials"
 }
 
