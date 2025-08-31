@@ -4,7 +4,7 @@ import requests
 TENANT_ID = "205aee12-1059-4628-90b8-86a3bce373c5"
 # Register an app AppRegistrationAutomation in the MS Entra Default Tenant and use its client ID
 CLIENT_ID = "a08031ee-9c7e-4a8a-a132-a96f23669aef"
-CLIENT_SECRET = ""
+CLIENT_SEC = ""
 
 token_url = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
 data = {

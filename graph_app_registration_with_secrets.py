@@ -28,13 +28,13 @@ SECRET_EXPIRY_DAYS = config.get("secret_expiry_days", 365)
 
 MSENTRA_DEFAULT_TENANT_ID = config["MSENTRA_DEFAULT_TENANT_ID"]
 APP_REGISTRATION_AUTOMATION_CLIENT_ID = config["APP_REGISTRATION_AUTOMATION_CLIENT_ID"]
-APP_REGISTRATION_AUTOMATION_CLIENT_SECRET = config["APP_REGISTRATION_AUTOMATION_CLIENT_SECRET"]
+APP_REGISTRATION_AUTOMATION_CLIENT_SEC = config["APP_REGISTRATION_AUTOMATION_CLIENT_SEC"]
 
 print("MSENTRA_DEFAULT_TENANT_ID", MSENTRA_DEFAULT_TENANT_ID)
 print("APP_REGISTRATION_AUTOMATION_CLIENT_ID",
       APP_REGISTRATION_AUTOMATION_CLIENT_ID)
-print("APP_REGISTRATION_AUTOMATION_CLIENT_SECRET",
-      APP_REGISTRATION_AUTOMATION_CLIENT_SECRET)
+print("APP_REGISTRATION_AUTOMATION_CLIENT_SEC",
+      APP_REGISTRATION_AUTOMATION_CLIENT_SEC)
 
 print("USERS_TO_ASSIGN", USERS_TO_ASSIGN)
 print("SPA_REDIRECT_URIS", SPA_REDIRECT_URIS)
@@ -52,13 +52,13 @@ APP_REGISTRATION_AUTOMATION_CLIENT_ID = config["APP_REGISTRATION_AUTOMATION_CLIE
 
 def generate_access_token_for_app_registration_automation(MSENTRA_DEFAULT_TENANT_ID,
                                                           APP_REGISTRATION_AUTOMATION_CLIENT_ID,
-                                                          APP_REGISTRATION_AUTOMATION_CLIENT_SECRET):
+                                                          APP_REGISTRATION_AUTOMATION_CLIENT_SEC):
     try:
         token_url = f"https://login.microsoftonline.com/{MSENTRA_DEFAULT_TENANT_ID}/oauth2/v2.0/token"
         data = {
             "client_id": APP_REGISTRATION_AUTOMATION_CLIENT_ID,
             "scope": "https://graph.microsoft.com/.default",
-            "client_secret": APP_REGISTRATION_AUTOMATION_CLIENT_SECRET,
+            "client_secret": APP_REGISTRATION_AUTOMATION_CLIENT_SEC,
             "grant_type": "client_credentials"
         }
 
@@ -189,7 +189,7 @@ def remove_app_role_assignments(sp_id):
 ACCESS_TOKEN = generate_access_token_for_app_registration_automation(
     MSENTRA_DEFAULT_TENANT_ID,
     APP_REGISTRATION_AUTOMATION_CLIENT_ID,
-    APP_REGISTRATION_AUTOMATION_CLIENT_SECRET
+    APP_REGISTRATION_AUTOMATION_CLIENT_SEC
 )
 
 if not ACCESS_TOKEN:
