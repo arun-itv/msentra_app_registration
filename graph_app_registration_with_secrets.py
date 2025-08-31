@@ -184,6 +184,16 @@ def remove_app_role_assignments(sp_id):
         print(f"Error removing app role assignments from {sp_id}: {e}")
 
 
+def cleanup_backend_and_spa():
+    print("Cleaning up resources...")
+    remove_app_role_assignments(BACKEND_SP_ID)
+    delete_service_principal(BACKEND_SP_ID)
+    delete_service_principal(SPA_SP_ID)
+    delete_app(BACKEND_ID)
+    delete_app(SPA_ID)
+    print("Cleanup completed.")
+
+
 # -----------------------------
 # MAIN EXECUTION
 # -----------------------------
@@ -340,12 +350,6 @@ for user_email in USERS_TO_ASSIGN:
     else:
         print(f"Assigned Admin role to {user_email}")
 
+# Call at the end
 time.sleep(20)
-# Step 4: Remove all app role assignments
-remove_app_role_assignments(BACKEND_SP_ID)
-# Step 5: Delete service principals
-delete_service_principal(BACKEND_SP_ID)
-delete_service_principal(SPA_SP_ID)
-# Step 6: Delete applications
-delete_app(BACKEND_ID)
-delete_app(SPA_ID)
+cleanup_backend_and_spa()
