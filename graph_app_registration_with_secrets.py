@@ -3,6 +3,7 @@ import uuid
 import json
 from datetime import datetime, timedelta
 import traceback
+import sys
 
 # -----------------------------
 # CONFIGURATION
@@ -13,29 +14,60 @@ with open("app_config.json") as f:
     config = json.load(f)
 env_config = config["environments"][ENVIRONMENT]
 print("env_config", env_config)
-ACCESS_TOKEN = config["ACCESS_TOKEN"]
+
 USERS_TO_ASSIGN = env_config["users_to_assign"]
 SPA_REDIRECT_URIS = env_config["spa_redirect_uris"]
+
 BACKEND_API_NAME = config["backend_api_name"]
 SPA_APP_NAME = config["spa_app_name"]
+
 SECRET_EXPIRY_DAYS = config.get("secret_expiry_days", 365)
-print("ACCESS_TOKEN", ACCESS_TOKEN)
+
+MSENTRA_DEFAULT_TENANT_ID = config["MSENTRA_DEFAULT_TENANT_ID"]
+APP_REGISTRATION_AUTOMATION_CLIENT_ID = config["APP_REGISTRATION_AUTOMATION_CLIENT_ID"]
+APP_REGISTRATION_AUTOMATION_CLIENT_SECRET = config["APP_REGISTRATION_AUTOMATION_CLIENT_SECRET"]
+
+print("MSENTRA_DEFAULT_TENANT_ID", MSENTRA_DEFAULT_TENANT_ID)
+print("APP_REGISTRATION_AUTOMATION_CLIENT_ID",
+      APP_REGISTRATION_AUTOMATION_CLIENT_ID)
+print("APP_REGISTRATION_AUTOMATION_CLIENT_SECRET",
+      APP_REGISTRATION_AUTOMATION_CLIENT_SECRET)
+
 print("USERS_TO_ASSIGN", USERS_TO_ASSIGN)
 print("SPA_REDIRECT_URIS", SPA_REDIRECT_URIS)
-print("BACKEND_API_NAME", BACKEND_API_NAME)
+
 print("SPA_APP_NAME", SPA_APP_NAME)
+print("BACKEND_API_NAME", BACKEND_API_NAME)
 print("SECRET_EXPIRY_DAYS", SECRET_EXPIRY_DAYS)
 
-HEADERS = {
-    "Authorization": f"Bearer {ACCESS_TOKEN}",
-    "Content-Type": "application/json"
-}
-GRAPH_URL = "https://graph.microsoft.com/v1.0"
-
+APP_REGISTRATION_AUTOMATION_CLIENT_ID = config["APP_REGISTRATION_AUTOMATION_CLIENT_ID"]
 
 # -----------------------------
 # HELPER FUNCTIONS
 # -----------------------------
+
+
+def generate_access_token_for_app_registration_automation(MSENTRA_DEFAULT_TENANT_ID,
+                                                          APP_REGISTRATION_AUTOMATION_CLIENT_ID,
+                                                          APP_REGISTRATION_AUTOMATION_CLIENT_SECRET):
+    try:
+        token_url = f"https://login.microsoftonline.com/{MSENTRA_DEFAULT_TENANT_ID}/oauth2/v2.0/token"
+        data = {
+            "client_id": APP_REGISTRATION_AUTOMATION_CLIENT_ID,
+            "scope": "https://graph.microsoft.com/.default",
+            "client_secret": APP_REGISTRATION_AUTOMATION_CLIENT_SECRET,
+            "grant_type": "client_credentials"
+        }
+
+        # disables SSL verification)
+        response = requests.post(token_url, data=data, verify=False)
+        response.raise_for_status()
+        access_token = response.json()["access_token"]
+
+        return access_token
+    except Exception as e:
+        print(f"Error while generating Access Token for Microsoft Graph API calls", e)
+        # traceback.print_exc()
 
 
 def create_application(payload):
@@ -104,6 +136,23 @@ def create_client_secret(app_id, display_name="auto-generated"):
     except Exception as e:
         print(f"Error while creating Client Secret", e)
 
+
+# -----------------------------
+# MAIN CODE
+ACCESS_TOKEN = generate_access_token_for_app_registration_automation(
+    MSENTRA_DEFAULT_TENANT_ID,
+    APP_REGISTRATION_AUTOMATION_CLIENT_ID,
+    APP_REGISTRATION_AUTOMATION_CLIENT_SECRET)
+print("ACCESS_TOKEN", ACCESS_TOKEN)
+
+sys.exit(0)  # Added for just validating access token generation
+
+HEADERS = {
+    "Authorization": f"Bearer {ACCESS_TOKEN}",
+    "Content-Type": "application/json"
+}
+GRAPH_URL = "https://graph.microsoft.com/v1.0"
+# -----------------------------
 
 # -----------------------------
 # 1. CREATE BACKEND API APP
